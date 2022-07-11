@@ -19,10 +19,14 @@ router.post(
   [
     //Remember: though these two checks are the same as in the "/signup" route,
     //Getting them into constants will fuck up the code and generate errors
-    check('email').isEmail().withMessage('please enter a vaild email'),
+    check('email')
+      .isEmail()
+      .withMessage('please enter a vaild email')
+      .normalizeEmail(),
     body('password', 'please add a pwd longer than 5 chars')
       .isLength({ min: 1 })
-      .isAlphanumeric(),
+      .isAlphanumeric()
+      .trim(),
   ],
   authController.postLogin
 );
@@ -39,16 +43,20 @@ router.post(
             return Promise.reject('E-mail already exists');
           }
         });
-      }),
+      })
+      .normalizeEmail(),
     body('password', 'please add a pwd longer than 5 chars')
       .isLength({ min: 1 })
-      .isAlphanumeric(),
-    body('confirmPassword').custom((value, { req }) => {
-      if (value !== req.body.password) {
-        throw new Error('pwds not equal');
-      }
-      return true;
-    }),
+      .isAlphanumeric()
+      .trim(),
+    body('confirmPassword')
+      .trim()
+      .custom((value, { req }) => {
+        if (value !== req.body.password) {
+          throw new Error('pwds not equal');
+        }
+        return true;
+      }),
   ],
   authController.postSignup
 );
