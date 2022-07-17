@@ -6,6 +6,7 @@ const sendgridTransport = require('nodemailer-sendgrid-transport');
 const { validationResult } = require('express-validator');
 
 const User = require('../models/user');
+const errorHandler = require('../util/error');
 
 const transporter = nodemailer.createTransport(
   sendgridTransport({
@@ -147,7 +148,7 @@ exports.postSignup = (req, res, next) => {
       }
     })
     .catch(err => {
-      console.log(err);
+      return next(errorHandler(err));
     });
 };
 
@@ -200,7 +201,7 @@ exports.postReset = (req, res, next) => {
         });
       })
       .catch(err => {
-        console.log(err);
+        return next(errorHandler(err));
       });
   });
 };
@@ -256,6 +257,6 @@ exports.postNewPassword = (req, res, next) => {
       res.redirect('/login');
     })
     .catch(err => {
-      console.log(err);
+      return next(errorHandler(err));
     });
 };

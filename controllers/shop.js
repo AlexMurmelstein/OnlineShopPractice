@@ -1,5 +1,6 @@
 const Product = require('../models/product');
 const Order = require('../models/order');
+const errorHandler = require('../util/error');
 
 exports.getProducts = (req, res, next) => {
   Product.find()
@@ -12,7 +13,7 @@ exports.getProducts = (req, res, next) => {
       });
     })
     .catch(err => {
-      console.log(err);
+      return next(errorHandler(err));
     });
 };
 
@@ -26,7 +27,9 @@ exports.getProduct = (req, res, next) => {
         path: '/products',
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      return next(errorHandler(err));
+    });
 };
 
 exports.getIndex = (req, res, next) => {
@@ -39,7 +42,7 @@ exports.getIndex = (req, res, next) => {
       });
     })
     .catch(err => {
-      console.log(err);
+      return next(errorHandler(err));
     });
 };
 
@@ -55,7 +58,9 @@ exports.getCart = (req, res, next) => {
         products: products,
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      return next(errorHandler(err));
+    });
 };
 
 exports.postCart = (req, res, next) => {
@@ -77,7 +82,9 @@ exports.postCartDeleteProduct = (req, res, next) => {
     .then(result => {
       res.redirect('/cart');
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      return next(errorHandler(err));
+    });
 };
 
 exports.postOrder = (req, res, next) => {
@@ -103,7 +110,9 @@ exports.postOrder = (req, res, next) => {
     .then(() => {
       res.redirect('/orders');
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      return next(errorHandler(err));
+    });
 };
 
 exports.getOrders = (req, res, next) => {
@@ -115,5 +124,7 @@ exports.getOrders = (req, res, next) => {
         orders: orders,
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      return next(errorHandler(err));
+    });
 };
