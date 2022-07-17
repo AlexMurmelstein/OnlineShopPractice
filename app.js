@@ -22,6 +22,7 @@ const store = new MongoDBStore({
 });
 
 const csrfProtection = csrf();
+const fileStorage = require('./util/multer');
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
@@ -31,7 +32,7 @@ const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
 
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(multer({ dest: 'images' }).single('image'));
+app.use(multer({ storage: fileStorage }).single('image'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(
   session({
@@ -45,6 +46,7 @@ app.use(csrfProtection);
 app.use(flash());
 
 app.use((req, res, next) => {
+  console.log(req.session);
   res.locals.isAuthenticated = req.session.isLoggedIn;
   res.locals.csrfToken = req.csrfToken();
   next();
@@ -77,6 +79,7 @@ app.get('/500', errorController.get500);
 app.use(errorController.get404);
 
 app.use((error, req, res, next) => {
+  console.log('WWW', req.session.isLoggedIn);
   res.status(500).render('500', {
     pageTitle: 'Technical error occured!',
     path: '/500',
