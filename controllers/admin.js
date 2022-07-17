@@ -1,4 +1,5 @@
 const Product = require('../models/product');
+const errorHandler = require('../util/error');
 const { validationResult } = require('express-validator');
 const mongoose = require('mongoose');
 
@@ -39,7 +40,6 @@ exports.postAddProduct = (req, res, next) => {
   }
 
   const product = new Product({
-    _id: new mongoose.Types.ObjectId('62c958773b152038f89573bd'),
     title: title,
     price: price,
     description: description,
@@ -54,7 +54,7 @@ exports.postAddProduct = (req, res, next) => {
       res.redirect('/admin/products');
     })
     .catch(err => {
-      return res.redirect('/500');
+      return next(errorHandler(err));
     });
 };
 
@@ -79,7 +79,9 @@ exports.getEditProduct = (req, res, next) => {
         validationErrors: [],
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      return next(errorHandler(err));
+    });
 };
 
 exports.postEditProduct = (req, res, next) => {
@@ -124,7 +126,9 @@ exports.postEditProduct = (req, res, next) => {
         res.redirect('/admin/products');
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      return next(errorHandler(err));
+    });
 };
 
 exports.getProducts = (req, res, next) => {
@@ -139,7 +143,9 @@ exports.getProducts = (req, res, next) => {
         path: '/admin/products',
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      return next(errorHandler(err));
+    });
 };
 
 exports.postDeleteProduct = (req, res, next) => {
@@ -149,5 +155,7 @@ exports.postDeleteProduct = (req, res, next) => {
       console.log('DESTROYED PRODUCT');
       res.redirect('/admin/products');
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      return next(errorHandler(err));
+    });
 };
