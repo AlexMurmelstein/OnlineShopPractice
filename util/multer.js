@@ -1,6 +1,6 @@
 const multer = require('multer');
 
-module.exports = multer.diskStorage({
+exports.fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'images');
   },
@@ -8,3 +8,11 @@ module.exports = multer.diskStorage({
     cb(null, `${new Date().getTime()}-${file.originalname}`);
   },
 });
+
+exports.fileFilter = (req, file, cb) => {
+  if (['image/png', 'image/jpg', 'image/jpeg'].includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
