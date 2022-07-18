@@ -139,7 +139,7 @@ exports.getInvoices = (req, res, next) => {
         return next(errorHandler('No order found'));
       }
       if (order.user.userId.toString() !== req.user._id.toString()) {
-        return next(errorHanlder('Unauthorized'));
+        return next(errorHandler('Unauthorized'));
       }
     })
     .catch(err => {
