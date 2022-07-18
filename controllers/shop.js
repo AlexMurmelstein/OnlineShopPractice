@@ -133,12 +133,26 @@ exports.getOrders = (req, res, next) => {
 
 exports.getInvoices = (req, res, next) => {
   const orderId = req.params.orderId;
+  Order.findById(orderId)
+    .then(order => {
+      if (!order) {
+        return next(errorHandler('No order found'));
+      }
+      if (order.user.userId.toString() !== req.user._id.toString()) {
+        return next(errorHanlder('Unauthorized'));
+      }
+    })
+    .catch(err => {
+      return next(errorHandler(err));
+    });
   const invoiceName = `invoice-${orderId}.pdf`;
   const invoicePath = path.join('data', 'invoices', invoiceName);
   fs.readFile(invoicePath, (err, data) => {
     if (err) {
       return next(errorHandler(err));
     }
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename=${invoiceName}`);
     res.send(data);
   });
 };
